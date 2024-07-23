@@ -1,94 +1,57 @@
 module.exports = grammar({
-  name: 'maxima',
-
+  name: "maxima",
+  extras: ($) => [$.comment, $._whitespace],
   rules: {
-    source_file: $ => repeat($._statement),
+    source_file: ($) => repeat($.statement),
 
-    _statement: $ => choice(
-      $.assignment,
-      $.function_definition,
-      $.control_structure,
-      $.expression
-    ),
+    statement: ($) => seq($.expression, choice("$", ";")),
 
-    assignment: $ => seq(
-      field('left', $.identifier),
-      ':',
-      field('right', $.expression)
-    ),
+    expression: ($) =>
+      choice(
+        $._bracket_expression,
+        $.declaration,
+        $._atom,
+        // $.unary_expression,
+        // $.binary_expression,
+        // $.nary_expression,
+        $.function_call,
+        $.list,
+        $.block,
+        // $.if,
+        // $.for,
+        // $.while,
+      ),
 
-    function_definition: $ => prec(1, seq(
-      field('name', $.identifier),
-      '(',
-      optional($.parameter_list),
-      ')',
-      ':=',
-      field('body', $.expression)
-    )),
+    declaration: ($) => seq($.identifier, ":", $.expression),
 
-    parameter_list: $ => prec(1,seq(
-      $.identifier,
-      repeat(seq(',', $.identifier))
-    )),
+    // TODO constants such as %pi or %e
+    _atom: ($) => choice($.identifier, $.number),
 
-    control_structure: $ => choice(
-      $.if_expression,
-      $.for_expression
-    ),
+    _bracket_expression: ($) => seq("(", $.expression, ")"),
 
-    if_expression: $ => seq(
-      'if',
-      field('condition', $.expression),
-      'then',
-      field('consequence', $.expression),
-      optional(seq(
-        'else',
-        field('alternative', $.expression)
-      ))
-    ),
+    function_call: ($) =>
+      seq($.identifier, "(", optional($._function_arguments), ")"),
 
-    for_expression: $ => seq(
-      'for',
-      field('variable', $.identifier),
-      ':',
-      field('start', $.expression),
-      'step',
-      field('step', $.expression),
-      'until',
-      field('end', $.expression),
-      'do',
-      field('body', $.expression)
-    ),
+    _function_arguments: ($) =>
+      seq(repeat(seq($.expression, ",")), seq($.expression)),
 
-    expression: $ => choice(
-      $.number,
-      $.identifier,
-      $.binary_expression,
-      $.function_call
-    ),
+    list: ($) => seq("[", optional($._function_arguments), "]"),
 
-    binary_expression: $ => choice(
-      prec.left(seq($.expression, '+', $.expression)),
-      prec.left(seq($.expression, '-', $.expression)),
-      prec.left(seq($.expression, '*', $.expression)),
-      prec.left(seq($.expression, '/', $.expression))
-    ),
+    block: ($) => seq("block", "(", optional($._function_arguments), ")"),
 
-    function_call: $ => seq(
-      field('name', $.identifier),
-      '(',
-      optional($.argument_list),
-      ')'
-    ),
+    identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
-    argument_list: $ => seq(
-      $.expression,
-      repeat(seq(',', $.expression))
-    ),
+    number: ($) => /\d+(\.\d+)?/,
 
-    identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    //-------------------------------------------------------------------------
+    // TODO Nested comments are allowed (but not supported by this parser)
+    comment: ($) => seq("/*", optional($._comment_text), "*/"),
 
-    number: $ => /\d+(\.\d+)?/
-  }
+    _comment_text: ($) => repeat1(choice(/.|\n|\r/)),
+
+    // TODO whitespace around a dot "." should not be removed.. see
+    // https://maxima.sourceforge.io/docs/manual/maxima_singlepage.html#Dot
+    // Also, if1=1 should not be parsed as if 1=1...
+    _whitespace: ($) => /\s/,
+  },
 });
-
