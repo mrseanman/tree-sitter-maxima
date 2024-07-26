@@ -1,7 +1,6 @@
-abc;
-ass;
-abc(a, b, c);
-3 + 4 * 5;
-1 * 2 + 4;
-1 * 2 * 3 + 4;
-
+f (a, b):= 2^(a*b);
+1 + 1  * 7;
+if a > 10 + 12 then is(yo = 12) elseif false then yo else hi;
+"asdsah\"fdsf" ;
+is(a=b);
+is(a = b);
