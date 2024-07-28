@@ -25,18 +25,26 @@
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "addition",
           "named": true
         },
         {
-          "type": "algebraic_expression",
+          "type": "bracketed_algebraic_expression",
+          "named": true
+        },
+        {
+          "type": "decimal_float",
           "named": true
         },
         {
           "type": "division",
+          "named": true
+        },
+        {
+          "type": "dot_multiplication",
           "named": true
         },
         {
@@ -48,15 +56,23 @@
           "named": true
         },
         {
+          "type": "integer",
+          "named": true
+        },
+        {
           "type": "multiplication",
           "named": true
         },
         {
-          "type": "number",
+          "type": "nounified_algebraic_expression",
           "named": true
         },
         {
           "type": "pi_const_atom",
+          "named": true
+        },
+        {
+          "type": "sci_float",
           "named": true
         },
         {
@@ -68,6 +84,40 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "and",
+    "named": true,
+    "fields": {
+      "LHS": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          }
+        ]
+      },
+      "RHS": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -91,7 +141,7 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
             "named": true
           }
         ]
@@ -129,7 +179,7 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
             "named": true
           }
         ]
@@ -161,7 +211,7 @@
           "named": true
         },
         {
-          "type": "string_literal",
+          "type": "string_expression",
           "named": true
         }
       ]
@@ -171,28 +221,6 @@
     "type": "assign_function",
     "named": true,
     "fields": {
-      "argument": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "algebraic_expression",
-            "named": true
-          },
-          {
-            "type": "expression",
-            "named": true
-          },
-          {
-            "type": "logical_expression",
-            "named": true
-          },
-          {
-            "type": "string_literal",
-            "named": true
-          }
-        ]
-      },
       "assigned_identifier": {
         "multiple": false,
         "required": true,
@@ -220,11 +248,21 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
             "named": true
           }
         ]
       }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bracketed_function_arguments",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -248,11 +286,114 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
             "named": true
           }
         ]
       }
+    }
+  },
+  {
+    "type": "bracketed_algebraic_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "algebraic_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "bracketed_ambiguous_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "bracketed_function_arguments",
+    "named": true,
+    "fields": {
+      "argument": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "algebraic_expression",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          },
+          {
+            "type": "string_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "bracketed_logical_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "logical_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "bracketed_string_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "string_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "break",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bracketed_function_arguments",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -295,6 +436,73 @@
     }
   },
   {
+    "type": "do",
+    "named": true,
+    "fields": {
+      "action": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "algebraic_expression",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          },
+          {
+            "type": "string_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "dot_multiplication",
+    "named": true,
+    "fields": {
+      "multiplicand": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "algebraic_expression",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "double_quoted_string_literal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "double_quoted_content",
+          "named": true
+        },
+        {
+          "type": "escaped_char",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "else_alternative",
     "named": true,
     "fields": {
@@ -315,7 +523,7 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
             "named": true
           }
         ]
@@ -357,7 +565,7 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
             "named": true
           }
         ]
@@ -385,7 +593,7 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
             "named": true
           }
         ]
@@ -407,7 +615,7 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
             "named": true
           }
         ]
@@ -477,7 +685,31 @@
           "named": true
         },
         {
-          "type": "expression",
+          "type": "bracketed_ambiguous_expression",
+          "named": true
+        },
+        {
+          "type": "break",
+          "named": true
+        },
+        {
+          "type": "do",
+          "named": true
+        },
+        {
+          "type": "for_step_thru",
+          "named": true
+        },
+        {
+          "type": "for_step_unless",
+          "named": true
+        },
+        {
+          "type": "for_step_while",
+          "named": true
+        },
+        {
+          "type": "for_var_in_array",
           "named": true
         },
         {
@@ -493,19 +725,53 @@
           "named": true
         },
         {
-          "type": "indexed_array",
+          "type": "indexed_iterator",
+          "named": true
+        },
+        {
+          "type": "lambda",
+          "named": true
+        },
+        {
+          "type": "nounified_expression",
+          "named": true
+        },
+        {
+          "type": "print",
+          "named": true
+        },
+        {
+          "type": "return",
+          "named": true
+        },
+        {
+          "type": "set",
+          "named": true
+        },
+        {
+          "type": "while",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "function_call",
+    "type": "for_step_thru",
     "named": true,
     "fields": {
-      "argument": {
-        "multiple": true,
-        "required": false,
+      "initialize_iterator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "initialize_for_iterator",
+            "named": true
+          }
+        ]
+      },
+      "terminating_value": {
+        "multiple": false,
+        "required": true,
         "types": [
           {
             "type": "algebraic_expression",
@@ -520,12 +786,178 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "algebraic_expression",
+          "named": true
+        },
+        {
+          "type": "do",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "logical_expression",
+          "named": true
+        },
+        {
+          "type": "string_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "for_step_unless",
+    "named": true,
+    "fields": {
+      "initialize_iterator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "initialize_for_iterator",
             "named": true
           }
         ]
       },
-      "function": {
+      "terminating_condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "algebraic_expression",
+          "named": true
+        },
+        {
+          "type": "do",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "logical_expression",
+          "named": true
+        },
+        {
+          "type": "string_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "for_step_while",
+    "named": true,
+    "fields": {
+      "continuing_condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          }
+        ]
+      },
+      "initialize_iterator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "initialize_for_iterator",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "algebraic_expression",
+          "named": true
+        },
+        {
+          "type": "do",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "logical_expression",
+          "named": true
+        },
+        {
+          "type": "string_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "for_var_in_array",
+    "named": true,
+    "fields": {
+      "iterate_thru": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "algebraic_expression",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          },
+          {
+            "type": "string_expression",
+            "named": true
+          }
+        ]
+      },
+      "iterator": {
         "multiple": false,
         "required": true,
         "types": [
@@ -534,7 +966,65 @@
             "named": true
           }
         ]
+      },
+      "terminating_condition": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          }
+        ]
       }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "do",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "function_call",
+    "named": true,
+    "fields": {
+      "function": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "algebraic_expression",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bracketed_function_arguments",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -654,7 +1144,7 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string_expression",
             "named": true
           }
         ]
@@ -662,19 +1152,9 @@
     }
   },
   {
-    "type": "indexed_array",
+    "type": "index",
     "named": true,
     "fields": {
-      "array": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
       "index": {
         "multiple": false,
         "required": true,
@@ -689,6 +1169,127 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "indexed_iterator",
+    "named": true,
+    "fields": {
+      "iterator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "index",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "initialize_for_iterator",
+    "named": true,
+    "fields": {
+      "initial_value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "algebraic_expression",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          },
+          {
+            "type": "string_expression",
+            "named": true
+          }
+        ]
+      },
+      "iterator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "is",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "logical_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "lambda",
+    "named": true,
+    "fields": {
+      "lambda_variables": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "array",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "algebraic_expression",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "logical_expression",
+          "named": true
+        },
+        {
+          "type": "string_expression",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -768,6 +1369,14 @@
       "required": false,
       "types": [
         {
+          "type": "and",
+          "named": true
+        },
+        {
+          "type": "bracketed_logical_expression",
+          "named": true
+        },
+        {
           "type": "equation",
           "named": true
         },
@@ -784,6 +1393,10 @@
           "named": true
         },
         {
+          "type": "is",
+          "named": true
+        },
+        {
           "type": "less_than",
           "named": true
         },
@@ -792,7 +1405,15 @@
           "named": true
         },
         {
-          "type": "logical_expression",
+          "type": "not",
+          "named": true
+        },
+        {
+          "type": "nounified_logical_expression",
+          "named": true
+        },
+        {
+          "type": "or",
           "named": true
         },
         {
@@ -820,6 +1441,197 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "not",
+    "named": true,
+    "fields": {
+      "negated_expression": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "nounified_algebraic_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "algebraic_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "nounified_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "nounified_logical_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "logical_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "nounified_string_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "string_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "or",
+    "named": true,
+    "fields": {
+      "LHS": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          }
+        ]
+      },
+      "RHS": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "print",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bracketed_function_arguments",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "return",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bracketed_function_arguments",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "set",
+    "named": true,
+    "fields": {
+      "argument": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "algebraic_expression",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          },
+          {
+            "type": "string_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "single_quoted_string_literal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escaped_char",
+          "named": true
+        },
+        {
+          "type": "single_quoted_content",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -858,30 +1670,34 @@
           "named": true
         },
         {
-          "type": "string_literal",
+          "type": "string_expression",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "string_literal",
+    "type": "string_expression",
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": false,
+      "multiple": false,
+      "required": true,
       "types": [
         {
-          "type": "double_quoted_content",
+          "type": "bracketed_string_expression",
           "named": true
         },
         {
-          "type": "escaped_char",
+          "type": "double_quoted_string_literal",
           "named": true
         },
         {
-          "type": "single_quoted_content",
+          "type": "nounified_string_expression",
+          "named": true
+        },
+        {
+          "type": "single_quoted_string_literal",
           "named": true
         }
       ]
@@ -941,6 +1757,36 @@
     }
   },
   {
+    "type": "while",
+    "named": true,
+    "fields": {
+      "continuing_condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "do",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "\"",
     "named": false
   },
@@ -978,6 +1824,10 @@
   },
   {
     "type": "-",
+    "named": false
+  },
+  {
+    "type": ".",
     "named": false
   },
   {
@@ -1037,7 +1887,23 @@
     "named": false
   },
   {
+    "type": "and",
+    "named": false
+  },
+  {
     "type": "block",
+    "named": false
+  },
+  {
+    "type": "break",
+    "named": false
+  },
+  {
+    "type": "decimal_float",
+    "named": true
+  },
+  {
+    "type": "do",
     "named": false
   },
   {
@@ -1065,6 +1931,10 @@
     "named": true
   },
   {
+    "type": "for",
+    "named": false
+  },
+  {
     "type": "identifier",
     "named": true
   },
@@ -1073,11 +1943,43 @@
     "named": false
   },
   {
-    "type": "number",
+    "type": "in",
+    "named": false
+  },
+  {
+    "type": "integer",
     "named": true
   },
   {
+    "type": "is",
+    "named": false
+  },
+  {
+    "type": "lambda",
+    "named": false
+  },
+  {
+    "type": "not",
+    "named": false
+  },
+  {
+    "type": "or",
+    "named": false
+  },
+  {
     "type": "pi_const_atom",
+    "named": true
+  },
+  {
+    "type": "print",
+    "named": false
+  },
+  {
+    "type": "return",
+    "named": false
+  },
+  {
+    "type": "sci_float",
     "named": true
   },
   {
@@ -1085,11 +1987,35 @@
     "named": true
   },
   {
+    "type": "step",
+    "named": false
+  },
+  {
     "type": "then",
+    "named": false
+  },
+  {
+    "type": "thru",
     "named": false
   },
   {
     "type": "true_atom",
     "named": true
+  },
+  {
+    "type": "unless",
+    "named": false
+  },
+  {
+    "type": "while",
+    "named": false
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
   }
 ]

@@ -1,6 +1,22 @@
-f (a, b):= 2^(a*b);
-1 + 1  * 7;
-if a > 10 + 12 then is(yo = 12) elseif false then yo else hi;
-"asdsah\"fdsf" ;
-is(a=b);
-is(a = b);
+f(a, b):= 2^(a*b);
+f(hi):= rand((yo));
+"yo\"a";
+smelly: yol;
+f(1) = 1;
+123;
+yo;
+'cos(10);
+for x in [1,2,3] do block(yo);
+true and b and c;
+true;
+is true;
+false;
+fdsahjk;
+if a = b then yo;
+lambda([x], x);
+(yo)(10);
+'cos(10);
+(a + b)(10);
+'a + b;
+{1,2}[2]
+

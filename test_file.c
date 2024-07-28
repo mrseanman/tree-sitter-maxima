@@ -17,4 +17,4 @@ int main() {
     return 0;
 }
 int 1[a];
-int yo
+int yo = 10;

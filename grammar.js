@@ -1,27 +1,26 @@
 const OPPREC = {
+  ITERATE: -10,
   ASSIGN: 10,
   ASSIGN_EVAL: 20,
   ASSIGN_FUNCTION: 30,
+  IS: 35,
   IF: 40,
   EQUALITY: 50,
   INEQUALITY: 60,
+  OR: 61,
+  AND: 62,
+  NOT: 63,
   SUBTRACTION: 70,
   ADDITION: 80,
   UNARY_MINUS: 90,
   MULTIPLICATION: 100,
+  DOTMULTIPLICATION: 105,
   DIVISION: 110,
   EXPONENT: 120,
   FACTORIAL: 130,
   INDEX: 140,
-};
-
-// Maybe get rid of this stuff
-const TYPEPREC = {
-  AMBIGUOUS: -1000,
-  COMPOUND: -1000,
-  LOGICAL: -1000,
-  ALGEBRAIC: -1000,
-  ASSIGNMENT: -1000,
+  FUNCTION_CALL: 145,
+  NOUNIFY: 150,
 };
 
 module.exports = grammar({
@@ -42,12 +41,15 @@ module.exports = grammar({
     _expression: ($) =>
       choice(
         // Ambiguous type
+        // Also where type separation is not important for parsing.
+        // E.g. algebraic expressions can be iterated on just as well as arrays.
         $.expression,
         // Known, algebraic type
         $.algebraic_expression,
         // Known, logical type
         $.logical_expression,
-        $.string_literal,
+        // Known, string literal type
+        $.string_expression,
       ),
 
     // *************************************************************************
@@ -55,25 +57,79 @@ module.exports = grammar({
     // *************************************************************************
 
     expression: ($) =>
+      choice(
+        $._ambiguous_atom,
+        $.bracketed_ambiguous_expression,
+        $._ambiguous_special_function,
+        $._unary_ambiguous_function,
+        $._program_flow,
+        $._assignment_expression,
+        $._arrays_and_sets,
+      ),
+
+    // -------------------------------------------
+
+    _ambiguous_atom: ($) => choice($.identifier),
+
+    bracketed_ambiguous_expression: ($) => seq("(", $.expression, ")"),
+
+    // ******* SPECIAL FUNCTIONS ***********************************************
+
+    _ambiguous_special_function: ($) =>
+      choice($.break, $.lambda, $.print, $.return),
+
+    break: ($) => seq("break", $.bracketed_function_arguments),
+
+    lambda: ($) =>
+      seq(
+        "lambda",
+        "(",
+        field("lambda_variables", $.array),
+        ",",
+        $._expression,
+        repeat(seq(",", $._expression)),
+        ")",
+      ),
+
+    print: ($) => seq("print", $.bracketed_function_arguments),
+
+    return: ($) => seq("return", $.bracketed_function_arguments),
+
+    // ******* UNARY FUNCTIONS *************************************************
+
+    _unary_ambiguous_function: ($) => choice($.nounified_expression),
+
+    nounified_expression: ($) => prec(OPPREC.NOUNIFY, seq("'", $.expression)),
+
+    // ******* PROGRAM FLOW ****************************************************
+
+    _program_flow: ($) =>
+      choice(
+        // $.expression_function_call,
+        $.function_call,
+        $.block,
+        $.if,
+        $._iterate,
+      ),
+
+    // Sometimes the function is an expression, not just an identifier
+    // This is especially important for nounified functions, e.g. 'cos(%pi)
+    // I see no need to parse algebraic expressions as the function.
+    // e.g. (f+g)(10) will not be parsed. It is not parsed as a sum of functions
+    // in maxima
+    function_call: ($) =>
       prec(
-        TYPEPREC.AMBIGUOUS,
-        choice(
-          $._ambiguous_atom,
-          $._bracket_ambiguous_expression,
-          $._assignment_expression,
-          $.array,
-          $.indexed_array,
-          $.block,
-          $.function_call,
-          $.if,
+        OPPREC.FUNCTION_CALL,
+        seq(
+          field(
+            "function",
+            choice($.identifier, $.expression, $.algebraic_expression),
+          ),
+          $.bracketed_function_arguments,
         ),
       ),
 
-    _bracket_ambiguous_expression: ($) => seq("(", $.expression, ")"),
-
     block: ($) => seq("block", "(", optional($._function_arguments), ")"),
-
-    // -------------------------------------------
 
     if: ($) =>
       prec.right(
@@ -99,33 +155,93 @@ module.exports = grammar({
 
     // -------------------------------------------
 
-    function_call: ($) =>
-      seq(
-        field("function", $.identifier),
-        "(",
-        optional($._function_arguments),
-        ")",
-      ),
-
-    _ambiguous_atom: ($) => choice($.identifier),
-
-    // *************************************************************************
-    // ******* ASSIGNMENT TYPE *************************************************
-    // *************************************************************************
-
-    _assignment_expression: ($) =>
+    _iterate: ($) =>
       prec(
-        TYPEPREC.ASSIGNMENT,
+        OPPREC.ITERATE,
         choice(
-          $._bracket_assignment_expression,
-          $.assign,
-          $.assign_eval,
-          $.assign_function,
+          $.for_var_in_array,
+          $.for_step_thru,
+          $.for_step_while,
+          $.for_step_unless,
+          $.while,
+          $.do,
         ),
       ),
 
-    _bracket_assignment_expression: ($) =>
-      seq("(", $._assignment_expression, ")"),
+    for_var_in_array: ($) =>
+      seq(
+        "for",
+        field("iterator", $.identifier),
+        "in",
+        field("iterate_thru", $._expression),
+        optional(
+          field(
+            "terminating_condition",
+            choice($.expression, $.logical_expression),
+          ),
+        ),
+        $.do,
+      ),
+
+    for_step_thru: ($) =>
+      seq(
+        "for",
+        field("initialize_iterator", $.initialize_for_iterator),
+        optional(seq("step", $._expression)),
+        "thru",
+        field("terminating_value", $._expression),
+        $.do,
+      ),
+
+    for_step_while: ($) =>
+      seq(
+        "for",
+        field("initialize_iterator", $.initialize_for_iterator),
+        optional(seq("step", $._expression)),
+        "while",
+        field(
+          "continuing_condition",
+          choice($.expression, $.logical_expression),
+        ),
+        $.do,
+      ),
+
+    for_step_unless: ($) =>
+      seq(
+        "for",
+        field("initialize_iterator", $.initialize_for_iterator),
+        optional(seq("step", $._expression)),
+        "unless",
+        field(
+          "terminating_condition",
+          choice($.expression, $.logical_expression),
+        ),
+        $.do,
+      ),
+
+    initialize_for_iterator: ($) =>
+      seq(
+        field("iterator", $.identifier),
+        ":",
+        field("initial_value", $._expression),
+      ),
+
+    while: ($) =>
+      seq(
+        "while",
+        field(
+          "continuing_condition",
+          choice($.expression, $.logical_expression),
+        ),
+        $.do,
+      ),
+
+    do: ($) => seq("do", field("action", $._expression)),
+
+    // ******* ASSIGNMENT ******************************************************
+
+    _assignment_expression: ($) =>
+      choice($.assign, $.assign_eval, $.assign_function),
 
     assign: ($) =>
       prec(
@@ -145,28 +261,28 @@ module.exports = grammar({
         OPPREC.ASSIGN_FUNCTION,
         seq(
           field("assigned_identifier", $.identifier),
-          "(",
-          optional($._function_arguments),
-          ")",
+          $.bracketed_function_arguments,
           ":=",
           field("assigned_value", $._expression),
         ),
       ),
 
-    // *************************************************************************
-    // ******* COMPOUND TYPES **************************************************
-    // *************************************************************************
+    // ******* ARRAYS AND SETS *************************************************
+
+    _arrays_and_sets: ($) => choice($.array, $.set, $.indexed_iterator),
+
+    set: ($) => seq("{", optional($._function_arguments), "}"),
 
     array: ($) => seq("[", optional($._function_arguments), "]"),
-    indexed_array: ($) =>
-      prec(
-        OPPREC.INDEX,
-        seq(
-          field("array", $.expression),
-          "[",
-          field("index", choice($.expression, $.algebraic_expression)),
-          "]",
-        ),
+
+    indexed_iterator: ($) =>
+      prec(OPPREC.INDEX, seq(field("iterator", $.expression), $.index)),
+
+    index: ($) =>
+      seq(
+        "[",
+        field("index", choice($.expression, $.algebraic_expression)),
+        "]",
       ),
 
     // *************************************************************************
@@ -174,31 +290,35 @@ module.exports = grammar({
     // *************************************************************************
 
     algebraic_expression: ($) =>
-      prec(
-        TYPEPREC.ALGEBRAIC,
-        choice(
-          $._algebraic_atom,
-          $._bracket_algebraic_expression,
-          $._binary_algebraic_function,
-          $._unary_algebraic_function,
-        ),
+      choice(
+        $._algebraic_atom,
+        $.bracketed_algebraic_expression,
+        $._binary_algebraic_function,
+        $._unary_algebraic_function,
       ),
 
-    _bracket_algebraic_expression: ($) => seq("(", $.algebraic_expression, ")"),
+    bracketed_algebraic_expression: ($) =>
+      seq("(", $.algebraic_expression, ")"),
 
-    _algebraic_atom: ($) => choice($.number, $._const),
+    _algebraic_atom: ($) => choice($._number_literal, $._const),
 
     _const: ($) => choice($.pi_const_atom, $.e_const_atom),
 
+    _number_literal: ($) => choice($.integer, $.decimal_float, $.sci_float),
+
     // -------------------------------------------
 
-    _unary_algebraic_function: ($) => choice($.unary_minus),
+    _unary_algebraic_function: ($) =>
+      choice($.unary_minus, $.nounified_algebraic_expression),
 
     unary_minus: ($) =>
       prec(
         OPPREC.UNARY_MINUS,
         seq("-", choice($.expression, $.algebraic_expression)),
       ),
+
+    nounified_algebraic_expression: ($) =>
+      prec(OPPREC.NOUNIFY, seq("'", $.algebraic_expression)),
 
     // -------------------------------------------
 
@@ -207,6 +327,7 @@ module.exports = grammar({
         $.addition,
         $.subtraction,
         $.multiplication,
+        $.dot_multiplication,
         $.division,
         $.exponent,
       ),
@@ -241,6 +362,16 @@ module.exports = grammar({
         ),
       ),
 
+    dot_multiplication: ($) =>
+      prec.left(
+        OPPREC.DOTMULTIPLICATION,
+        seq(
+          field("multiplicand", choice($.expression, $.algebraic_expression)),
+          ".",
+          field("multiplicand", choice($.expression, $.algebraic_expression)),
+        ),
+      ),
+
     division: ($) =>
       prec.left(
         OPPREC.DIVISION,
@@ -271,24 +402,80 @@ module.exports = grammar({
     // *************************************************************************
 
     logical_expression: ($) =>
-      prec(
-        TYPEPREC.LOGICAL,
-        choice(
-          $._bracket_logical_expression,
-          $._logical_atom,
-          $.equation,
-          $.less_than,
-          $.less_than_eq,
-          $.greater_than,
-          $.greater_than_eq,
-        ),
+      choice(
+        $.bracketed_logical_expression,
+        $._logical_atom,
+        $._unary_logical_function,
+        $._binary_logical_function,
+        $._special_logical_function,
+        $.equation,
+        $.less_than,
+        $.less_than_eq,
+        $.greater_than,
+        $.greater_than_eq,
       ),
 
-    _bracket_logical_expression: ($) => seq("(", $.logical_expression, ")"),
+    bracketed_logical_expression: ($) => seq("(", $.logical_expression, ")"),
 
     _logical_atom: ($) => choice($._tf_atom),
 
     _tf_atom: ($) => choice($.true_atom, $.false_atom),
+
+    // -------------------------------------------
+
+    _special_logical_function: ($) => choice($.is),
+
+    is: ($) =>
+      prec.left(
+        OPPREC.IS,
+        seq("is", choice($.expression, $.logical_expression)),
+      ),
+
+    // -------------------------------------------
+
+    _unary_logical_function: ($) =>
+      choice($.nounified_logical_expression, $.not),
+
+    nounified_logical_expression: ($) =>
+      prec(OPPREC.NOUNIFY, seq("'", $.logical_expression)),
+
+    not: ($) =>
+      prec(
+        OPPREC.NOT,
+        seq(
+          "not",
+          field(
+            "negated_expression",
+            choice($.expression, $.logical_expression),
+          ),
+        ),
+      ),
+
+    // -------------------------------------------
+
+    _binary_logical_function: ($) => choice($.and, $.or),
+
+    and: ($) =>
+      prec.left(
+        OPPREC.AND,
+        seq(
+          field("LHS", choice($.expression, $.logical_expression)),
+          "and",
+          field("RHS", choice($.expression, $.logical_expression)),
+        ),
+      ),
+
+    or: ($) =>
+      prec.left(
+        OPPREC.OR,
+        seq(
+          field("LHS", choice($.expression, $.logical_expression)),
+          "or",
+          field("RHS", choice($.expression, $.logical_expression)),
+        ),
+      ),
+
+    // -------------------------------------------
 
     // Equations are valid with really anything on LHS or RHS
     // (sort of ... a=b=c is not parsed, but (a=b)=c and a=(b=c) are)
@@ -345,13 +532,23 @@ module.exports = grammar({
     // ******* STRINGS *********************************************************
     // *************************************************************************
 
-    string_literal: ($) =>
-      choice($._double_quoted_string, $._single_quoted_string),
+    string_expression: ($) =>
+      choice(
+        $.bracketed_string_expression,
+        $.nounified_string_expression,
+        $.double_quoted_string_literal,
+        $.single_quoted_string_literal,
+      ),
 
-    _double_quoted_string: ($) =>
+    bracketed_string_expression: ($) => seq("(", $.string_expression, ")"),
+
+    nounified_string_expression: ($) =>
+      prec(OPPREC.NOUNIFY, seq("'", $.string_expression)),
+
+    double_quoted_string_literal: ($) =>
       seq('"', repeat(choice($.escaped_char, $.double_quoted_content)), '"'),
 
-    _single_quoted_string: ($) =>
+    single_quoted_string_literal: ($) =>
       seq("'", repeat(choice($.escaped_char, $.single_quoted_content)), "'"),
 
     escaped_char: ($) => token(seq("\\", /./)),
@@ -363,6 +560,9 @@ module.exports = grammar({
     // *************************************************************************
     // ******* HELPER **********************************************************
     // *************************************************************************
+
+    bracketed_function_arguments: ($) =>
+      seq("(", optional($._function_arguments), ")"),
 
     _function_arguments: ($) =>
       seq(
@@ -376,7 +576,9 @@ module.exports = grammar({
 
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
-    number: ($) => /\d+(\.\d+)?/,
+    integer: ($) => /\d+/,
+    decimal_float: ($) => /\d+(\.\d+)?/,
+    sci_float: ($) => /\d+(\.\d+)?[eE]-?\d+/,
 
     // *************************************************************************
     // ******* EXTRAS **********************************************************
