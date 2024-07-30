@@ -241,7 +241,7 @@ module.exports = grammar({
     // ******* ASSIGNMENT ******************************************************
 
     _assignment_expression: ($) =>
-      choice($.assign, $.assign_eval, $.assign_function),
+      choice($.assign, $.assign_eval, $.assign_function, $.assign_array_index),
 
     assign: ($) =>
       prec(
@@ -263,6 +263,16 @@ module.exports = grammar({
           field("assigned_identifier", $.identifier),
           $.bracketed_function_arguments,
           ":=",
+          field("assigned_value", $._expression),
+        ),
+      ),
+
+    assign_array_index: ($) =>
+      prec(
+        OPPREC.ASSIGN,
+        seq(
+          field("assigned_indexed_array", $.indexed_array),
+          ":",
           field("assigned_value", $._expression),
         ),
       ),

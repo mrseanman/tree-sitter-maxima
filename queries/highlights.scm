@@ -9,6 +9,8 @@
 (assign
   assigned_identifier: (identifier) @variable
   ":" @operator)
+(assign_array_index
+  ":" @operator)
 (assign_function
   assigned_identifier: (identifier) @function
   ":=" @operator)
