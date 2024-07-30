@@ -271,7 +271,7 @@ module.exports = grammar({
       prec(
         OPPREC.ASSIGN,
         seq(
-          field("assigned_indexed_array", $.indexed_array),
+          field("assigned_indexed_array", $.indexed_iterator),
           ":",
           field("assigned_value", $._expression),
         ),
