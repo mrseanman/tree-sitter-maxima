@@ -6,22 +6,6 @@
   "(" @delimiter
   ")" @delimiter @sentinel) @container
 
-(lambda
-  "(" @delimiter
-  ")" @delimiter @sentinel) @container
-
-(set
-  "{" @delimiter
-  "}" @delimiter @sentinel) @container
-
-(array
-  "[" @delimiter
-  "]" @delimiter @sentinel) @container
-
-(index
-  "[" @delimiter
-  "]" @delimiter @sentinel) @container
-
 (bracketed_ambiguous_expression
   "(" @delimiter
   ")" @delimiter @sentinel) @container
@@ -37,3 +21,19 @@
 (bracketed_string_expression
   "(" @delimiter
   ")" @delimiter @sentinel) @container
+
+(lambda
+  "(" @delimiter
+  ")" @delimiter @sentinel) @container
+
+(set
+  "{" @delimiter
+  "}" @delimiter @sentinel) @container
+
+(array
+  "[" @delimiter
+  "]" @delimiter @sentinel) @container
+
+(index
+  "[" @delimiter
+  "]" @delimiter @sentinel) @container

@@ -129,7 +129,7 @@ module.exports = grammar({
         ),
       ),
 
-    block: ($) => seq("block", "(", optional($._function_arguments), ")"),
+    block: ($) => seq("block", $.bracketed_function_arguments),
 
     if: ($) =>
       prec.right(
