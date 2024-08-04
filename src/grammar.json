@@ -308,24 +308,8 @@
           "value": "block"
         },
         {
-          "type": "STRING",
-          "value": "("
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "_function_arguments"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "STRING",
-          "value": ")"
+          "type": "SYMBOL",
+          "name": "bracketed_function_arguments"
         }
       ]
     },
@@ -794,6 +778,14 @@
         {
           "type": "SYMBOL",
           "name": "assign_function"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "assign_array_index"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "assign_multiple_via_array"
         }
       ]
     },
@@ -872,6 +864,64 @@
           {
             "type": "FIELD",
             "name": "assigned_value",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expression"
+            }
+          }
+        ]
+      }
+    },
+    "assign_array_index": {
+      "type": "PREC",
+      "value": 10,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "assigned_indexed_array",
+            "content": {
+              "type": "SYMBOL",
+              "name": "indexed_iterator"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": ":"
+          },
+          {
+            "type": "FIELD",
+            "name": "assigned_value",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_expression"
+            }
+          }
+        ]
+      }
+    },
+    "assign_multiple_via_array": {
+      "type": "PREC",
+      "value": 10,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "array_of_assigned_identifiers",
+            "content": {
+              "type": "SYMBOL",
+              "name": "array"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": ":"
+          },
+          {
+            "type": "FIELD",
+            "name": "array_of_assigned_values",
             "content": {
               "type": "SYMBOL",
               "name": "_expression"

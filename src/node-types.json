@@ -187,6 +187,44 @@
     }
   },
   {
+    "type": "assign_array_index",
+    "named": true,
+    "fields": {
+      "assigned_indexed_array": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "indexed_iterator",
+            "named": true
+          }
+        ]
+      },
+      "assigned_value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "algebraic_expression",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          },
+          {
+            "type": "string_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "assign_eval",
     "named": true,
     "fields": {},
@@ -266,12 +304,22 @@
     }
   },
   {
-    "type": "block",
+    "type": "assign_multiple_via_array",
     "named": true,
     "fields": {
-      "argument": {
-        "multiple": true,
-        "required": false,
+      "array_of_assigned_identifiers": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "array",
+            "named": true
+          }
+        ]
+      },
+      "array_of_assigned_values": {
+        "multiple": false,
+        "required": true,
         "types": [
           {
             "type": "algebraic_expression",
@@ -291,6 +339,21 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bracketed_function_arguments",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -673,11 +736,19 @@
           "named": true
         },
         {
+          "type": "assign_array_index",
+          "named": true
+        },
+        {
           "type": "assign_eval",
           "named": true
         },
         {
           "type": "assign_function",
+          "named": true
+        },
+        {
+          "type": "assign_multiple_via_array",
           "named": true
         },
         {
