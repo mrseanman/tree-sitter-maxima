@@ -15,9 +15,6 @@
 (assign_array_index
   ":" @operator)
 (assign_multiple_via_array
-  array_of_assigned_identifiers:
-    (array
-      (identifier) @variable)
   ":" @operator)
 
 (function_call
