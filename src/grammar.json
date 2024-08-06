@@ -94,21 +94,25 @@
       ]
     },
     "bracketed_ambiguous_expression": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "("
-        },
-        {
-          "type": "SYMBOL",
-          "name": "expression"
-        },
-        {
-          "type": "STRING",
-          "value": ")"
-        }
-      ]
+      "type": "PREC",
+      "value": -5,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "("
+          },
+          {
+            "type": "SYMBOL",
+            "name": "expression"
+          },
+          {
+            "type": "STRING",
+            "value": ")"
+          }
+        ]
+      }
     },
     "_ambiguous_special_function": {
       "type": "CHOICE",
@@ -258,6 +262,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "implicit_block"
+        },
+        {
+          "type": "SYMBOL",
           "name": "if"
         },
         {
@@ -312,6 +320,14 @@
           "name": "bracketed_function_arguments"
         }
       ]
+    },
+    "implicit_block": {
+      "type": "PREC",
+      "value": 1000,
+      "content": {
+        "type": "SYMBOL",
+        "name": "bracketed_function_arguments"
+      }
     },
     "if": {
       "type": "PREC_RIGHT",
@@ -1070,21 +1086,25 @@
       ]
     },
     "bracketed_algebraic_expression": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "("
-        },
-        {
-          "type": "SYMBOL",
-          "name": "algebraic_expression"
-        },
-        {
-          "type": "STRING",
-          "value": ")"
-        }
-      ]
+      "type": "PREC",
+      "value": -5,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "("
+          },
+          {
+            "type": "SYMBOL",
+            "name": "algebraic_expression"
+          },
+          {
+            "type": "STRING",
+            "value": ")"
+          }
+        ]
+      }
     },
     "_algebraic_atom": {
       "type": "CHOICE",
@@ -1556,21 +1576,25 @@
       ]
     },
     "bracketed_logical_expression": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "("
-        },
-        {
-          "type": "SYMBOL",
-          "name": "logical_expression"
-        },
-        {
-          "type": "STRING",
-          "value": ")"
-        }
-      ]
+      "type": "PREC",
+      "value": -5,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "("
+          },
+          {
+            "type": "SYMBOL",
+            "name": "logical_expression"
+          },
+          {
+            "type": "STRING",
+            "value": ")"
+          }
+        ]
+      }
     },
     "_logical_atom": {
       "type": "CHOICE",
@@ -2049,21 +2073,25 @@
       ]
     },
     "bracketed_string_expression": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "("
-        },
-        {
-          "type": "SYMBOL",
-          "name": "string_expression"
-        },
-        {
-          "type": "STRING",
-          "value": ")"
-        }
-      ]
+      "type": "PREC",
+      "value": -5,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "("
+          },
+          {
+            "type": "SYMBOL",
+            "name": "string_expression"
+          },
+          {
+            "type": "STRING",
+            "value": ")"
+          }
+        ]
+      }
     },
     "nounified_string_expression": {
       "type": "PREC",

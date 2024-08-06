@@ -796,6 +796,10 @@
           "named": true
         },
         {
+          "type": "implicit_block",
+          "named": true
+        },
+        {
           "type": "indexed_iterator",
           "named": true
         },
@@ -1220,6 +1224,21 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "implicit_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "bracketed_function_arguments",
+          "named": true
+        }
+      ]
     }
   },
   {
