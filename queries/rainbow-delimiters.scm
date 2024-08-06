@@ -2,17 +2,13 @@
 ;  "(" @delimiter
 ;  ")" @delimiter @sentinel) @container
 
-; (implicit_blocks
-;   "(" @delimiter
-;   ")" @delimiter @sentinel) @container
-;
-; (bracketed_function_arguments
-;   "(" @delimiter
-;   ")" @delimiter @sentinel) @container
-;
-; (bracketed_ambiguous_expression
-;   "(" @delimiter
-;   ")" @delimiter @sentinel) @container
+(bracketed_function_arguments
+  "(" @delimiter
+  ")" @delimiter @sentinel) @containe
+
+(bracketed_ambiguous_expression
+  "(" @delimiter
+  ")" @delimiter @sentinel) @container
 
 (bracketed_algebraic_expression
   "(" @delimiter
