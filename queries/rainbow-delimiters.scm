@@ -4,7 +4,7 @@
 
 (bracketed_function_arguments
   "(" @delimiter
-  ")" @delimiter @sentinel) @containe
+  ")" @delimiter @sentinel) @container
 
 (bracketed_ambiguous_expression
   "(" @delimiter
