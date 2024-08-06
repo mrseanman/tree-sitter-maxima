@@ -1,5 +1,7 @@
 const OPPREC = {
-  ITERATE: -10,
+  IMPLICIT_BLOCK: 7,
+  NORM_BRACKETING: 8,
+  ITERATE: 9,
   ASSIGN: 10,
   ASSIGN_EVAL: 20,
   ASSIGN_FUNCTION: 30,
@@ -71,7 +73,8 @@ module.exports = grammar({
 
     _ambiguous_atom: ($) => choice($.identifier),
 
-    bracketed_ambiguous_expression: ($) => seq("(", $.expression, ")"),
+    bracketed_ambiguous_expression: ($) =>
+      prec(OPPREC.NORM_BRACKETING, seq("(", $.expression, ")")),
 
     // ******* SPECIAL FUNCTIONS ***********************************************
 
@@ -108,6 +111,7 @@ module.exports = grammar({
         // $.expression_function_call,
         $.function_call,
         $.block,
+        $.implicit_block,
         $.if,
         $._iterate,
       ),
@@ -130,6 +134,9 @@ module.exports = grammar({
       ),
 
     block: ($) => seq("block", $.bracketed_function_arguments),
+
+    implicit_block: ($) =>
+      prec(OPPREC.IMPLICIT_BLOCK, $.bracketed_function_arguments),
 
     if: ($) =>
       prec.right(
@@ -324,7 +331,7 @@ module.exports = grammar({
       ),
 
     bracketed_algebraic_expression: ($) =>
-      seq("(", $.algebraic_expression, ")"),
+      prec(OPPREC.NORM_BRACKETING, seq("(", $.algebraic_expression, ")")),
 
     _algebraic_atom: ($) => choice($._number_literal, $._const),
 
@@ -441,7 +448,8 @@ module.exports = grammar({
         $.greater_than_eq,
       ),
 
-    bracketed_logical_expression: ($) => seq("(", $.logical_expression, ")"),
+    bracketed_logical_expression: ($) =>
+      prec(OPPREC.NORM_BRACKETING, seq("(", $.logical_expression, ")")),
 
     _logical_atom: ($) => choice($._tf_atom),
 
@@ -566,7 +574,8 @@ module.exports = grammar({
         $.single_quoted_string_literal,
       ),
 
-    bracketed_string_expression: ($) => seq("(", $.string_expression, ")"),
+    bracketed_string_expression: ($) =>
+      prec(OPPREC.NORM_BRACKETING, seq("(", $.string_expression, ")")),
 
     nounified_string_expression: ($) =>
       prec(OPPREC.NOUNIFY, seq("'", $.string_expression)),
