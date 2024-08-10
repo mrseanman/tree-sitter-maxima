@@ -824,6 +824,10 @@
           "named": true
         },
         {
+          "type": "thru_without_iterator",
+          "named": true
+        },
+        {
           "type": "while",
           "named": true
         }
@@ -1825,6 +1829,44 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "thru_without_iterator",
+    "named": true,
+    "fields": {
+      "terminating_value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "algebraic_expression",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "logical_expression",
+            "named": true
+          },
+          {
+            "type": "string_expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "do",
+          "named": true
+        }
+      ]
     }
   },
   {

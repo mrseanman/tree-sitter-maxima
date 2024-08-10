@@ -170,6 +170,7 @@ module.exports = grammar({
           $.for_step_thru,
           $.for_step_while,
           $.for_step_unless,
+          $.thru_without_iterator,
           $.while,
           $.do,
         ),
@@ -225,6 +226,9 @@ module.exports = grammar({
         ),
         $.do,
       ),
+
+    thru_without_iterator: ($) =>
+      seq("thru", field("terminating_value", $._expression), $.do),
 
     initialize_for_iterator: ($) =>
       seq(

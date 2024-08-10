@@ -461,6 +461,10 @@
           },
           {
             "type": "SYMBOL",
+            "name": "thru_without_iterator"
+          },
+          {
+            "type": "SYMBOL",
             "name": "while"
           },
           {
@@ -700,6 +704,27 @@
                 "name": "logical_expression"
               }
             ]
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "do"
+        }
+      ]
+    },
+    "thru_without_iterator": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "thru"
+        },
+        {
+          "type": "FIELD",
+          "name": "terminating_value",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
           }
         },
         {
